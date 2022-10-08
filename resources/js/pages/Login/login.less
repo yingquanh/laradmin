@@ -1,0 +1,96 @@
+.sign-flow-home-page {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background: url("@/assets/bg-login.svg") no-repeat center;
+    background-color: rgba(236, 239, 244, 1);
+}
+
+.sign-flow-home-page-content {
+    display: flex;
+    position: absolute;
+    width: 800px;
+    height: 540px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgb(0 0 0 / 15%);
+}
+
+.sign-flow-home-page-left {
+    background: url("@/assets/bg-logo.svg") no-repeat center;
+    width: 330px;
+    padding-top: 20px;
+    text-align: center;
+}
+
+.sign-flow-home-page-left img {
+    width: 100px;
+    height: 100px;
+    padding: 15px;
+}
+
+.system-title {
+    /* margin-top: 100px; */
+}
+
+.main-title {
+    font-family: "微软雅黑 Bold", "微软雅黑 Regular", "微软雅黑", sans-serif;
+    font-weight: 700;
+    color: #666666;
+    font-size: 16px;
+    margin: 0;
+}
+
+.sub-title {
+    font-family: "微软雅黑", sans-serif;
+    font-weight: 400;
+    color: #999999;
+    font-size: 14px;
+    margin: 0;
+}
+
+.sign-flow-home-page-right {
+    flex: 1;
+    padding: 30px;
+}
+
+.sign-flow-home-page-right .SignForm {
+    margin-top: 66px;
+}
+
+.sign-flow-home-page-right .ant-input-affix-wrapper {
+    height: 50px;
+    border-radius: 5px;
+}
+
+.sign-flow-home-page-right .ant-btn {
+    height: 50px;
+    border-radius: 5px;
+}
+
+.sign-flow-home-page-right .ant-btn > span {
+    font-size: 18px;
+    font-family: '微软雅黑 Bold', '微软雅黑 Regular', '微软雅黑', sans-serif;
+    font-weight: 700;
+    font-style: normal;
+}
+
+.captcha::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 133.98px;
+    height: 50px;
+    border: 1px solid rgba(228, 228, 228, 1);
+    border-radius: 5px;
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    cursor: pointer;
+}
