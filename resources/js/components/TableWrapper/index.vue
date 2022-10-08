@@ -22,7 +22,7 @@
         :scroll="scroll"
         :showExpandColumn="showExpandColumn"
         :showHeader="showHeader"
-        :size="size"
+        :size="tableSize[0]"
         :sortDirections="sortDirections"
     >
         <!-- 页头 -->
@@ -31,16 +31,43 @@
                 <slot name="headerExtra"></slot>
             </div>
             <div class="header-operate">
-                <a-button type="text">
-                    <template #icon>
-                        <sync-outlined />
-                    </template>
-                </a-button>
-                <a-button type="text">
-                    <template #icon>
-                        <setting-outlined />
-                    </template>
-                </a-button>
+                <a-tooltip title="刷新">
+                    <a-button type="text" @click="onRefresh">
+                        <template #icon>
+                            <sync-outlined />
+                        </template>
+                    </a-button>
+                </a-tooltip>
+                <a-tooltip title="密度">
+                    <a-dropdown placement="bottom" trigger="click">
+                        <a-button type="text">
+                            <template #icon>
+                                <column-height-outlined />
+                            </template>
+                        </a-button>
+                        <template #overlay>
+                            <a-menu v-model:selectedKeys="tableSize" selectable>
+                                <a-menu-item key="default">默认</a-menu-item>
+                                <a-menu-item key="middle">中等</a-menu-item>
+                                <a-menu-item key="small">紧凑</a-menu-item>
+                            </a-menu>
+                        </template>
+                    </a-dropdown>
+                    
+                </a-tooltip>
+                <a-tooltip title="列设置">
+                    <a-popover title="Title" placement="bottomRight" trigger="click">
+                        <template #content>
+                            <p>Content</p>
+                            <p>Content</p>
+                        </template>
+                        <a-button type="text">
+                            <template #icon>
+                                <setting-outlined />
+                            </template>
+                        </a-button>
+                    </a-popover>
+                </a-tooltip>
             </div>
         </template>
         <!-- 页头 -->
@@ -88,9 +115,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, reactive, toRefs } from 'vue';
 export default defineComponent({
     name: 'TableWrapper',
+    emits: ['refresh'],
     props: {
         childrenColumnName: {
             type: String,
@@ -167,13 +195,6 @@ export default defineComponent({
             type: Boolean,
             default: true
         },
-        size: {
-            type: String,
-            default: 'default',
-            validator(value: string) {
-                return ['default', 'middle', 'small'].includes(value)
-            }
-        },
         sortDirections: {
             type: Array,
             default() {
@@ -181,8 +202,23 @@ export default defineComponent({
             }
         },
     },
-    setup() {
+    setup(_props, context) {
+        const state = reactive({
+            tableSize: ['default'],
+        });
 
+        const tableSize = ['default'];
+
+        // 刷新表格
+        const onRefresh = () => {
+            context.emit('refresh');
+        }
+
+
+        return {
+            ...toRefs(state),
+            onRefresh,
+        }
     }
 })
 </script>

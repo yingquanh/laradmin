@@ -32,6 +32,7 @@
             :data-source="data" 
             :pagination="pagination"
             :loading="false"
+            @refresh="onRefresh"
         >
             <template #headerExtra>
                 <a-button>添加标签</a-button>
@@ -147,12 +148,17 @@ export default defineComponent({
                 address: 'Sidney No. 1 Lake Park',
             },
         ];
+
+        const onRefresh = () => {
+            console.log('手动刷新列表')
+        }
         
         return {
             filterState,
             pagination,
             data,
             columns,
+            onRefresh,
         }
     }
 })
