@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Facade;
 
 /**
  * Class UploadFile
- * @package App\Facades
+ * @package App\Facades\Uploader
  * @method static string image()
  * @method static string audio()
  * @method static string video()

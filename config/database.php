@@ -60,6 +60,7 @@ return [
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+                PDO::ATTR_PERSISTENT => true,   // 开启持久连接
             ]) : [],
         ],
 
@@ -135,6 +136,7 @@ return [
             'password' => env('REDIS_PASSWORD'),
             'port' => env('REDIS_PORT', '6379'),
             'database' => env('REDIS_DB', '0'),
+            'persistent' => true, // 开启持久连接
         ],
 
         'cache' => [
@@ -144,6 +146,7 @@ return [
             'password' => env('REDIS_PASSWORD'),
             'port' => env('REDIS_PORT', '6379'),
             'database' => env('REDIS_CACHE_DB', '1'),
+            'persistent' => true, // 开启持久连接
         ],
 
     ],

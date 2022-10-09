@@ -9,7 +9,7 @@
                 </div>
             </div>
             <div class="sign-flow-home-page-right">
-                <div class="header" style="text-align: left;">
+                <div class="header" style="text-align: left;height: 60px;line-height: 60px;">
                     <span style="font-family: '微软雅黑 Bold', '微软雅黑 Regular', '微软雅黑', sans-serif;font-weight: 700;font-size: 18px;color: #666666;">用户登录 </span>
                     <span style="font-family: '微软雅黑', sans-serif;font-weight: 400;font-size: 14px;color: #999999;">USER LOGIN</span>
                 </div>
