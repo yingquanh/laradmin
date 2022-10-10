@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "baseUrl": "./",
+        "paths": {
+            "@/*": ["resource/js/*"],
+        },
+        "target": "esnext",
+        "moduleResolution": "node",
+        "lib": [
+            "esnext",
+            "dom",
+            "es2015.promise",
+            "es2015"
+        ],
+        "jsx": "preserve",
+    }
+}

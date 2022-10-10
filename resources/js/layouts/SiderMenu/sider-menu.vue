@@ -148,7 +148,7 @@
     </a-layout>
 </template>
 
-<script lang="ts">
+<script>
 import { defineComponent, ref } from 'vue';
 import { useRouter } from 'vue-router';
 export default defineComponent({
@@ -190,7 +190,7 @@ export default defineComponent({
             }
         }
 
-        const siderOpenChange = (openKeys: string[]) => {
+        const siderOpenChange = (openKeys) => {
             console.log(openKeys)
         }
 

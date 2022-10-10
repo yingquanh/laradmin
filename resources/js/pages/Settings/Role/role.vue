@@ -44,7 +44,7 @@
                 <a-button>更多操作</a-button>
             </template>
 
-            <template #bodyCell="{ column, record }">
+            <template #bodyCell="{ column }">
 
                 <!-- 自定义操作单元格 -->
                 <template v-if="column.dataIndex === 'operate'">
@@ -64,20 +64,11 @@
     </page-wrapper>
 </template>
 
-<script lang="ts">
+<script>
 import { defineComponent, reactive } from 'vue';
 import PageWrapper from '@/components/PageWrapper';
 import QueryFilter from '@/components/QueryFilter';
 import TableWrapper from '@/components/TableWrapper';
-import type { TableProps, TableColumnType } from 'ant-design-vue';
-
-interface DataType {
-  key: string;
-  name: string;
-  age: number;
-  address: string;
-}
-
 export default defineComponent({
     name: 'Role',
     components: {
@@ -104,7 +95,7 @@ export default defineComponent({
             showTotal: total => `总共 ${total} 条数据`
         });
 
-        const columns: TableColumnType<DataType>[] = [
+        const columns = [
             {
                 title: 'Name',
                 dataIndex: 'name',
@@ -122,7 +113,7 @@ export default defineComponent({
                 dataIndex: 'operate'
             }
         ];
-        const data: DataType[] = [
+        const data = [
             {
                 key: '1',
                 name: 'John Brown',

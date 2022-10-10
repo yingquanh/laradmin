@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Validation\ValidationException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -45,6 +46,26 @@ class Handler extends ExceptionHandler
     {
         $this->reportable(function (Throwable $e) {
             //
+        });
+
+        /**
+         * 自定义表单验证错误消息格式
+         */
+        $this->renderable(function (ValidationException $exception) {
+            $message = $exception->validator->getMessageBag()->first();
+
+            // 方式二
+            // 只读取错误中的第一个错误信息
+            /* $errors = $exception->errors();
+            $message = '';
+            // 框架返回的是二维数组，因此需要去循环读取第一个数据
+            foreach ($errors as $key => $val) {
+                $keys = array_key_first($val);
+                $message = $val[$keys];
+                break;
+            } */
+
+            return response()->json(['errcode' => 1001, 'errmsg' => $message, 'data' => []]);
         });
     }
 }

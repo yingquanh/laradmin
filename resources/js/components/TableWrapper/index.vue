@@ -114,7 +114,7 @@
     </a-table>
 </template>
 
-<script lang="ts">
+<script>
 import { defineComponent, reactive, toRefs } from 'vue';
 export default defineComponent({
     name: 'TableWrapper',

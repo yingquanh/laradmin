@@ -1,4 +1,4 @@
-import Login from '@/pages/Login';
+// import LoginHome from '@/pages/Login';
 import SiderMenu from '@/layouts/SiderMenu';
 import Dashboard from '@/pages/Dashboard';
 import Account from '@/pages/Settings/Account';
@@ -8,7 +8,7 @@ export default [
     {
         path: '/login',
         name: 'Login',
-        component: Login
+        component: () => import('@/pages/Login')
     },
     /* {
         path: '/recover',

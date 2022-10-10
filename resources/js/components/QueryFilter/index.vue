@@ -33,7 +33,7 @@
     </a-form>
 </template>
 
-<script lang="ts">
+<script>
 import { defineComponent, onMounted, reactive, ref, useSlots, watch } from "vue";
 export default defineComponent({
     name: 'QueryFilter',

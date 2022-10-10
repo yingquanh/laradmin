@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('email', 255)->nullable(false)->default('')->comment('电子邮箱');
             $table->char('mobile', 11)->nullable(false)->default('')->comment('手机号码');
             $table->tinyInteger('status')->nullable(false)->default(0)->comment('状态: -1 - 异常; 0 - 正常; 1 - 禁用');
+            $table->rememberToken()->default('')->comment('记住密钥');
             $table->dateTime('created_at')->nullable(false)->default(new Expression('CURRENT_TIMESTAMP'))->comment('创建时间');
             $table->dateTime('updated_at')->nullable(false)->default(new Expression('CURRENT_TIMESTAMP'))->comment('更新时间');
             $table->dateTime('deleted_at')->nullable()->comment('删除时间');
