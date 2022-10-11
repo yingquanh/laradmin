@@ -1,5 +1,4 @@
 import axios from '@/utils/axios';
-// import axios from 'axios';
 
 export default {
     /**
@@ -11,6 +10,23 @@ export default {
         return new Promise((resolve, reject) => {
             axios.get('/captcha', {
                 params: params
+            }).then(res => {
+                resolve(res)
+            }).catch(err => {
+                reject(err)
+            })
+        })
+    },
+
+    /**
+     * 获取用户信息
+     * @param {*} params 
+     * @returns 
+     */
+    getUserInfo(params) {
+        return new Promise((resolve, reject) => {
+            axios.get('/userinfo', {
+                params: params,
             }).then(res => {
                 resolve(res)
             }).catch(err => {

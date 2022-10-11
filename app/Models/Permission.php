@@ -4,17 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Role extends Model
+class Permission extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     /**
      * 与模型关联的数据表
      *
      * @var string
      */
-    protected $table = 't_role';
+    protected $table = 't_permission';
 
     /**
      * 与数据表关联的主键
@@ -24,12 +25,12 @@ class Role extends Model
     protected $primaryKey = 'id';
 
     /**
-     * 关联 Account 模型
+     * 关联 Role 模型
      *
      * @return void
      */
-    public function admins()
+    public function roles()
     {
-        return $this->belongsToMany(Account::class, 't_account_role', 'role_id', 'account_id');
+        return $this->belongsToMany(Role::class, 't_role_permission', 'permission_id', 'role_id');
     }
 }

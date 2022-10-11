@@ -41,8 +41,8 @@ class Account extends Authenticatable
      *
      * @return void
      */
-    public function role()
+    public function roles()
     {
-        return $this->belongsTo('App\Models\Role', 'role_id', 'id');
+        return $this->belongsToMany(Role::class, 't_account_role', 'account_id', 'role_id');
     }
 }

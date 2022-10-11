@@ -18,11 +18,12 @@ return new class extends Migration
         Schema::create('t_permission', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('parent_id')->nullable(false)->default(0)->comment('父级权限ID');
-            $table->unsignedTinyInteger('node_type')->nullable(false)->default(0)->comment('类型: 0 - 导航; 1 - 按钮');
             $table->string('title', 100)->nullable(false)->default('')->comment('权限名称');
-            $table->string('node_code', 100)->nullable(false)->default('')->comment('节点代码');
-            $table->string('node_route', 100)->nullable(false)->default('')->comment('节点路由');
-            $table->string('menu_icon', 100)->nullable(false)->default('')->comment('菜单图标');
+            $table->string('node', 100)->nullable(false)->default('')->comment('权限节点');
+            $table->string('route', 100)->nullable(false)->default('')->comment('权限路由');
+            $table->string('component', 100)->nullable(false)->default('')->comment('权限组件');
+            $table->string('icon', 100)->nullable(false)->default('')->comment('菜单图标');
+            $table->unsignedTinyInteger('is_menu')->nullable(false)->default(0)->comment('导航菜单: 0 - 否; 1 - 是');
             $table->unsignedInteger('sort')->nullable(false)->default(0)->comment('排序值，值越大权重越高');
             $table->dateTime('created_at')->nullable(false)->default(new Expression('CURRENT_TIMESTAMP'))->comment('创建时间');
             $table->dateTime('updated_at')->nullable(false)->default(new Expression('CURRENT_TIMESTAMP'))->comment('更新时间');

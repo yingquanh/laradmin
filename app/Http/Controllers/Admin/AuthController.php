@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Facades\Captcha;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AuthPostRequest;
+use App\Http\Resources\AdminPermissionResource;
 use App\Services\AccountService;
+use App\Services\PermissionService;
 use App\Services\RoleService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,13 +19,16 @@ class AuthController extends Controller
 {
     protected $accountService;
     protected $roleService;
+    protected $permissionService;
 
     public function __construct(
         AccountService $accountService, 
-        RoleService $roleService)
+        RoleService $roleService, 
+        PermissionService $permissionService)
     {
         $this->accountService = $accountService;
         $this->roleService = $roleService;
+        $this->permissionService = $permissionService;
     }
 
     /**
@@ -127,5 +132,45 @@ class AuthController extends Controller
             'errmsg' => 'ok',
             'data' => []
         ]);
+    }
+
+    public function userinfo(Request $request)
+    {
+        // 管理员信息
+        $admins = Auth::guard('admin')->user();
+
+        // 动态路由
+        $permissions = $this->permissionService->findByAccountIdRows($admins['id']);
+
+        // 导航菜单
+        $menus = $this->buildMenuTree(array_filter($permissions->toArray(), function ($permission) {
+            return $permission['is_menu'] == 1;
+        }));
+
+        return response()->json([
+            'errcode' => 0,
+            'errmsg' => 'ok',
+            'data' => [
+                'admins' => $admins,
+                'permissions' => AdminPermissionResource::collection($permissions),
+                'menus' => $menus
+            ]
+        ]);
+    }
+
+    protected function buildMenuTree($list, int $parent_id = 0)
+    {
+        $menuArr = [];
+
+        if ($list) {
+            foreach ($list as $menu) {
+                if ($menu['parent_id'] == $parent_id) {
+                    $menu['children'] = $this->buildMenuTree($list, $menu['id']);
+                    $menuArr[] = $menu;
+                }
+            }
+        }
+
+        return $menuArr;
     }
 }

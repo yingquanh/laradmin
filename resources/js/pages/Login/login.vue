@@ -174,7 +174,7 @@ export default defineComponent({
                         });
 
                         // 重定向页面
-                        router.replace({name: 'Dashboard'});
+                        router.replace({name: 'Home'});
                     } else {
                         // 失败提示
                         notification.error({

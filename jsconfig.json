@@ -13,5 +13,6 @@
             "es2015"
         ],
         "jsx": "preserve",
-    }
+    },
+    "include": ["resource/js/**/*"]
 }

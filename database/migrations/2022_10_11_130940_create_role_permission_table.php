@@ -14,13 +14,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('t_role_account', function (Blueprint $table) {
+        Schema::create('t_role_permission', function (Blueprint $table) {
             $table->unsignedBigInteger('role_id')->nullable(false)->default(0)->comment('角色ID');
-            $table->unsignedBigInteger('account_id')->nullable(false)->default(0)->comment('账号ID');
-            $table->unique(['role_id', 'account_id'], 'uni_role_account');
+            $table->unsignedBigInteger('permission_id')->nullable(false)->default(0)->comment('权限ID');
+            $table->unique(['role_id', 'permission_id'], 'uni_role_permission');
         });
 
-        DB::statement("ALTER TABLE `t_role_account` COMMENT '系统角色组表'");
+        DB::statement("ALTER TABLE `t_role_permission` COMMENT '系统角色权限表'");
     }
 
     /**
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('t_role_account');
+        Schema::dropIfExists('t_role_permission');
     }
 };
