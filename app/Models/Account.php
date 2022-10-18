@@ -39,7 +39,7 @@ class Account extends Authenticatable
     /**
      * 关联 Role 模型
      *
-     * @return void
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function roles()
     {

@@ -25,7 +25,10 @@
                 <template #icon><UndoOutlined /></template>重置
             </a-button>
             <a-button v-show="slots.expand !== undefined" type="link" @click="toggleExpand">
-                <template #icon><DownOutlined v-if="!expand" /><UpOutlined v-else /></template>高级筛选
+                <template #icon>
+                    <DownOutlined :rotate="expand ? 180 : 0" />
+                </template>
+                高级筛选
             </a-button>
         </a-form-item>
         <!-- Operate button -->

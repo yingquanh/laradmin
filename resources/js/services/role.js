@@ -1,4 +1,4 @@
-import axios from '@/uitls/axios';
+import axios from '@/utils/axios';
 
 export default {
     /**

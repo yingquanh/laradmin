@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\AccountStatus;
 use App\Facades\Captcha;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AuthPostRequest;
@@ -74,9 +75,9 @@ class AuthController extends Controller
         $admins = $this->accountService->findByAccountName($request->input('account'));
         if (is_null($admins)) {
             throw ValidationException::withMessages(['message' => '账号不存在!']);
-        } elseif ($admins['status'] < 0) {
+        } elseif ($admins['status'] === AccountStatus::Abnormal->value) {
             throw ValidationException::withMessages(['message' => '账号异常, 请联系管理员重置账号!']);
-        } elseif ($admins['status'] > 0) {
+        } elseif ($admins['status'] === AccountStatus::Disabled->value) {
             throw ValidationException::withMessages(['message' => '账号被禁止使用, 请联系管理员解除封禁!']);
         }
 

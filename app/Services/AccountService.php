@@ -111,6 +111,17 @@ class AccountService
     }
 
     /**
+     * 根据ID查询账号信息
+     *
+     * @param integer $id
+     * @return void
+     */
+    public function findAccountInfoById(int $id)
+    {
+        return $this->account->with('roles')->find($id);
+    }
+
+    /**
      * 分页查询数据
      *
      * @param Request $reqeust
@@ -153,11 +164,11 @@ class AccountService
     /**
      * 删除数据
      *
-     * @param integer $account_id
+     * @param integer $id
      * @return \App\Models\Account|\Throwable
      */
-    public function delete(int $account_id)
+    public function delete(int $id)
     {
-        return $this->account->findOrFail($account_id)->delete();
+        return $this->account->findOrFail($id)->delete();
     }
 }

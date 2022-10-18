@@ -35,4 +35,19 @@ class PermissionService
             ->orderByDesc('sort')
             ->get();
     }
+
+    /**
+     * 根据字段查询所有权限数据
+     *
+     * @param string ...$columns
+     * @return \App\Models\Permission
+     */
+    public function allRows(string ...$columns)
+    {
+        if (!count($columns)) {
+            $columns = ['*'];
+        }
+        
+        return $this->permission->all($columns);
+    }
 }

@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\Admin\AccountController;
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\RoleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -15,33 +17,33 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::group(['middleware' => ['auth:sanctum'], 'namespace' => 'Admin', 'prefix' => 'web'], function ($route) {
+Route::group(['middleware' => ['auth:sanctum'], 'namespace' => 'Admin', 'prefix' => 'web'], function ($router) {
 
     // 公共路由
-    /* $route->any('ueditor', [CommonController::class, 'ueditor'])
+    /* $router->any('ueditor', [CommonController::class, 'ueditor'])
         ->withoutMiddleware(['auth:sanctum', EnsureFrontendRequestsAreStateful::class]);
-    $route->post('upload', [CommonController::class, 'upload']); */
+    $router->post('upload', [CommonController::class, 'upload']); */
 
     // 登录路由
-    $route->get('captcha', [AuthController::class, 'captcha'])->withoutMiddleware(['auth:sanctum']);
-    $route->get('userinfo', [AuthController::class, 'userinfo']);
-    $route->post('login', [AuthController::class, 'login'])->withoutMiddleware(['auth:sanctum']);
-    $route->post('logout', [AuthController::class, 'logout']);
+    $router->get('captcha', [AuthController::class, 'captcha'])->withoutMiddleware(['auth:sanctum']);
+    $router->get('userinfo', [AuthController::class, 'userinfo']);
+    $router->post('login', [AuthController::class, 'login'])->withoutMiddleware(['auth:sanctum']);
+    $router->post('logout', [AuthController::class, 'logout']);
 
     // 管理员路由
-    $route->get('account', [AccountController::class, 'index']);
-    $route->get('get_account_info', [AccountController::class, 'show']);
-    $route->post('creawte_account_info', [AccountController::class, 'store'])->name('admin.account.create');
-    $route->put('eidt_account_info', [AccountController::class, 'update'])->name('admin.account.edit');
-    $route->delete('delete_account_info', [AccountController::class, 'destroy'])->name('admin.account.delete');
+    $router->get('account', [AccountController::class, 'index'])->name('admin.account');
+    $router->get('get_account_info', [AccountController::class, 'show']);
+    $router->post('create_account_info', [AccountController::class, 'store'])->name('admin.account.create');
+    $router->put('update_account_info', [AccountController::class, 'update'])->name('admin.account.edit');
+    $router->delete('delete_account_info', [AccountController::class, 'destroy'])->name('admin.account.del');
 
     // 角色路由
-    /* $route->get('role', [RoleController::class, 'index']);
-    $route->get('role/info', [RoleController::class, 'show']);
-    $route->get('role/dictionary', [RoleController::class, 'dictionary']);
-    $route->get('role/permission', [RoleController::class, 'permission']);
-    $route->post('role', [RoleController::class, 'store']);
-    $route->put('role', [RoleController::class, 'update']);
-    $route->delete('role', [RoleController::class, 'destroy']); */
+    $router->get('role', [RoleController::class, 'index'])->name('admin.role');
+    $router->get('get_role_info', [RoleController::class, 'show']);
+    $router->get('get_role_dictionary', [RoleController::class, 'dictionary']);
+    $router->get('get_permission_dictionanry', [RoleController::class, 'permission']);
+    $router->post('create_role_info', [RoleController::class, 'store'])->name('admin.role.create');
+    $router->put('update_role_info', [RoleController::class, 'update'])->name('admin.role.edit');
+    $router->delete('delete_role_info', [RoleController::class, 'destroy'])->name('admin.role.del');
 
 });
