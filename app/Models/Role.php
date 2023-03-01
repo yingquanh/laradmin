@@ -15,7 +15,7 @@ class Role extends Model
      *
      * @var string
      */
-    protected $table = 't_role';
+    protected $table = 'tb_role';
 
     /**
      * 与数据表关联的主键
@@ -31,7 +31,7 @@ class Role extends Model
      */
     public function admins()
     {
-        return $this->belongsToMany(Account::class, 't_account_role', 'role_id', 'account_id');
+        return $this->belongsToMany(Account::class, 'tb_admin_role', 'role_id', 'admin_id');
     }
 
     /**
@@ -41,6 +41,6 @@ class Role extends Model
      */
     public function permissions()
     {
-        return $this->belongsToMany(Permission::class, 't_role_permission', 'role_id', 'permission_id');
+        return $this->belongsToMany(Permission::class, 'tb_role_permission', 'role_id', 'permission_id');
     }
 }

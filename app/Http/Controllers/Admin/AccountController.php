@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Facades\Response;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AccountPostRequest;
 use App\Http\Resources\AccountInfoResource;
@@ -26,19 +27,11 @@ class AccountController extends Controller
         try {
             $list = $this->accountService->paginate($request);
 
-            return response()->json([
-                'errcode' => 0,
-                'errmsg' => 'ok',
-                'data' => new AccountPaginateCollection($list)
-            ]);
+            return Response::successful()->setData(new AccountPaginateCollection($list))->toJson();
         } catch (\Exception $exce) {
-            Log::error($exce->getMessage().':'.$exce->getLine());
+            Log::error($exce);
 
-            return response()->json([
-                'errcode' => 10001,
-                'errmsg' => 'fail',
-                'data' => []
-            ]);
+            return Response::failed(10009)->toJson();
         }
     }
 
@@ -50,26 +43,20 @@ class AccountController extends Controller
      */
     public function show(Request $request)
     {
-        if (!$request->filled('id')) {
-            throw ValidationException::withMessages(['message' => '未知错误, 系统参数[id]缺失!']);
-        }
-
         try {
+            if (!$request->filled('id')) {
+                throw ValidationException::withMessages(['message' => '未知错误, 系统参数[id]缺失!']);
+            }
+
             $info = $this->accountService->findAccountInfoById($request->input('id'));
 
-            return response()->json([
-                'errcode' => 0,
-                'errcode' => 'ok',
-                'data' => new AccountInfoResource($info)
-            ]);
+            return Response::successful()->setData(new AccountInfoResource($info))->toJson();
+        } catch (ValidationException $exce) {
+            return Response::failed(10009, $exce->getMessage())->toJson();
         } catch (\Exception $exce) {
-            Log::error($exce->getMessage().':'.$exce->getLine());
+            Log::error($exce);
 
-            return response()->json([
-                'errcode' => 10001,
-                'errmsg' => 'fail',
-                'data' => []
-            ]);
+            return Response::failed(10009, '未查询到记录')->toJson();
         }
     }
 
@@ -81,20 +68,24 @@ class AccountController extends Controller
      */
     public function store(AccountPostRequest $request)
     {
-        if ($this->accountService->checkAccountName($request->input('account_name'))) {
-            throw ValidationException::withMessages(['message' => '账号已存在!']);
-        }
-
-        if ($this->accountService->checkAccountEmail($request->input('email'))) {
-            throw ValidationException::withMessages(['message' => '邮箱已存在!']);
-        }
-
-        if ($this->accountService->checkMobileNumber($request->input('mobile'))) {
-            throw ValidationException::withMessages(['message' => '手机号码已存在!']);
-        }
-
         DB::beginTransaction();
         try {
+            // 验证管理员账号
+            if ($this->accountService->checkAccountName($request->input('account'))) {
+                throw ValidationException::withMessages(['message' => '账号已存在!']);
+            }
+
+            // 验证管理员邮箱
+            if ($this->accountService->checkAccountEmail($request->input('email'))) {
+                throw ValidationException::withMessages(['message' => '邮箱已存在!']);
+            }
+
+            // 验证管理员手机号
+            if ($this->accountService->checkMobileNumber($request->input('mobile'))) {
+                throw ValidationException::withMessages(['message' => '手机号码已存在!']);
+            }
+
+
             // 存储账号信息
             $account = $this->accountService->save($request);
 
@@ -103,20 +94,16 @@ class AccountController extends Controller
 
             DB::commit();
 
-            return response()->json([
-                'errcode' => 0,
-                'errmsg' => '保存成功',
-                'data' => []
-            ]);
+            return Response::successful('提交成功')->toJson();
+        } catch (ValidationException $exce) {
+            DB::rollBack();
+
+            return Response::failed(10009, $exce->getMessage())->toJson();
         } catch (\Exception $exce) {
             DB::rollBack();
-            Log::error($exce->getMessage().':'.$exce->getLine());
+            Log::error($exce);
 
-            return response()->json([
-                'errcode' => 10003,
-                'errmsg' => '保存失败',
-                'data' => []
-            ]);
+            return Response::failed(10003, '操作失败')->toJson();
         }
     }
 
@@ -127,25 +114,30 @@ class AccountController extends Controller
      * @return void
      */
     public function update(AccountPostRequest $request)
-    {
-        if (!$request->filled('id')) {
-            throw ValidationException::withMessages(['message' => '未知错误, 系统参数[id]缺失!']);
-        }
-
-        if ($this->accountService->checkAccountName($request->input('account_name'), $request->input('id'))) {
-            throw ValidationException::withMessages(['message' => '账号已存在!']);
-        }
-
-        if ($this->accountService->checkAccountEmail($request->input('email'), $request->input('id'))) {
-            throw ValidationException::withMessages(['message' => '邮箱已存在!']);
-        }
-
-        if ($this->accountService->checkMobileNumber($request->input('mobile'), $request->input('id'))) {
-            throw ValidationException::withMessages(['message' => '手机号码已存在!']);
-        }
-        
+    {        
         DB::beginTransaction();
         try {
+            // 验证数据
+            if (!$request->filled('id')) {
+                throw ValidationException::withMessages(['message' => '未知错误, 系统参数[id]缺失!']);
+            }
+
+            // 验证管理员账号
+            if ($this->accountService->checkAccountName($request->input('account'), $request->input('id'))) {
+                throw ValidationException::withMessages(['message' => '账号已存在!']);
+            }
+
+            // 验证管理员邮箱
+            if ($this->accountService->checkAccountEmail($request->input('email'), $request->input('id'))) {
+                throw ValidationException::withMessages(['message' => '邮箱已存在!']);
+            }
+    
+            // 验证管理员手机号
+            if ($this->accountService->checkMobileNumber($request->input('mobile'), $request->input('id'))) {
+                throw ValidationException::withMessages(['message' => '手机号码已存在!']);
+            }
+
+
             // 更新账号信息
             $account = $this->accountService->save($request);
 
@@ -154,22 +146,16 @@ class AccountController extends Controller
 
             DB::commit();
 
-            // 修改密码后退出其他设备的session
+            return Response::successful('提交成功')->toJson();
+        } catch (ValidationException $exce) {
+            DB::rollBack();
 
-            return response()->json([
-                'errcode' => 0,
-                'errmsg' => '更新成功',
-                'data' => []
-            ]);
+            return Response::failed(10009, $exce->getMessage())->toJson();
         } catch (\Exception $exce) {
             DB::rollBack();
-            Log::error($exce->getMessage().':'.$exce->getLine());
+            Log::error($exce);
 
-            return response()->json([
-                'errcode' => 10003,
-                'errmsg' => '更新失败',
-                'data' => []
-            ]);
+            return Response::failed(10003, '操作失败')->toJson();
         }
     }
 
@@ -181,11 +167,11 @@ class AccountController extends Controller
      */
     public function destroy(Request $request)
     {
-        if (!$request->filled('id')) {
-            throw ValidationException::withMessages(['message' => '未知错误, 系统参数[id]缺失!']);
-        }
-
         try {
+            if (!$request->filled('id')) {
+                throw ValidationException::withMessages(['message' => '未知错误, 系统参数[id]缺失!']);
+            }
+
             $this->accountService->delete($request->input('id'));
 
             return response()->json([
@@ -193,14 +179,12 @@ class AccountController extends Controller
                 'errmsg' => '删除成功',
                 'data' => []
             ]);
+        } catch (ValidationException $exce) {
+            return Response::failed(10009, $exce->getMessage())->toJson();
         } catch (\Exception $exce) {
-            Log::error($exce->getMessage().':'.$exce->getLine());
+            Log::error($exce);
 
-            return response()->json([
-                'errcode' => 10003,
-                'errmsg' => '删除失败',
-                'data' => []
-            ]);
+            return Response::failed(10003, '操作失败')->toJson();
         }
     }
 }

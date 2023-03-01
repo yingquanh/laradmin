@@ -48,18 +48,20 @@ class RoleController extends Controller
 
     public function show(Request $request)
     {
-        if (!$request->filled('id')) {
-            throw ValidationException::withMessages(['message' => '未知错误, 系统参数[id]缺失']);
-        }
-
         try {
+            if (!$request->filled('id')) {
+                throw ValidationException::withMessages(['message' => '未知错误, 系统参数[id]缺失']);
+            }
+
             $info = $this->roleService->findRoleInfoById($request->input('id'));
 
             return Response::successful()->setData(new RoleInfoResource($info))->toJson();
+        } catch (ValidationException $exce) {
+            return Response::failed(10009, $exce->getMessage())->toJson();
         } catch (\Exception $exce) {
-            Log::error($exce->getMessage().':'.$exce->getLine());
+            Log::error($exce);
 
-            return Response::failed()->toJson();
+            return Response::failed(10009, '未查询到记录')->toJson();
         }
     }
 
@@ -76,7 +78,7 @@ class RoleController extends Controller
 
             return Response::successful()->setData($list)->toJson();
         } catch (\Exception $exce) {
-            Log::error($exce->getMessage().':'.$exce->getLine());
+            Log::error($exce);
 
             return Response::failed()->toJson();
         }
@@ -95,7 +97,7 @@ class RoleController extends Controller
 
             return Response::successful()->setData(RolePermissionResource::collection($list))->toJson();
         } catch (\Exception $exce) {
-            Log::error($exce->getMessage().':'.$exce->getLine());
+            Log::error($exce);
 
             return Response::failed()->toJson();
         }
@@ -109,12 +111,13 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        if ($this->roleService->checkRoleName($request->input('role_name'))) {
-            throw ValidationException::withMessages(['message' => '角色名称已存在']);
-        }
-
         DB::beginTransaction();
         try {
+            // 验证角色名称
+            if ($this->roleService->checkRoleName($request->input('role_name'))) {
+                throw ValidationException::withMessages(['message' => '角色名称已存在']);
+            }
+
             // 存储数据
             $role = $this->roleService->save($request);
 
@@ -124,9 +127,13 @@ class RoleController extends Controller
             DB::commit();
 
             return Response::successful('保存成功')->toJson();
+        } catch (ValidationException $exce) {
+            DB::rollBack();
+
+            return Response::failed(10009, $exce->getMessage())->toJson();
         } catch (\Exception $exce) {
             DB::rollBack();
-            Log::error($exce->getMessage().':'.$exce->getLine());
+            Log::error($exce);
 
             return Response::failed(10001)->toJson();
         }
@@ -140,16 +147,16 @@ class RoleController extends Controller
      */
     public function update(Request $request)
     {
-        if (!$request->filled('id')) {
-            throw ValidationException::withMessages(['message' => '未知错误, 系统参数[id]缺失']);
-        }
-
-        if ($this->roleService->checkRoleName($request->input('role_name'), $request->input('id'))) {
-            throw ValidationException::withMessages(['message' => '角色名称已存在']);
-        }
-
         DB::beginTransaction();
         try {
+            if (!$request->filled('id')) {
+                throw ValidationException::withMessages(['message' => '未知错误, 系统参数[id]缺失']);
+            }
+    
+            if ($this->roleService->checkRoleName($request->input('role_name'), $request->input('id'))) {
+                throw ValidationException::withMessages(['message' => '角色名称已存在']);
+            }
+
             // 存储数据
             $role = $this->roleService->save($request);
 
@@ -158,12 +165,16 @@ class RoleController extends Controller
 
             DB::commit();
 
-            return Response::successful('更新成功')->toJson();
+            return Response::successful('提交成功')->toJson();
+        } catch (ValidationException $exce) {
+            DB::rollBack();
+
+            return Response::failed(10009, $exce->getMessage())->toJson();
         } catch (\Exception $exce) {
             DB::rollBack();
-            Log::error($exce->getMessage().':'.$exce->getLine());
+            Log::error($exce);
 
-            return Response::failed(10002)->toJson();
+            return Response::failed(10003, '操作失败')->toJson();
         }
     }
 
@@ -175,18 +186,20 @@ class RoleController extends Controller
      */
     public function destroy(Request $request)
     {
-        if (!$request->filled('id')) {
-            throw ValidationException::withMessages(['message' => '未知错误, 系统参数[id]缺失']);
-        }
-
         try {
+            if (!$request->filled('id')) {
+                throw ValidationException::withMessages(['message' => '未知错误, 系统参数[id]缺失']);
+            }
+
             $this->roleService->delete($request->input('id'));
 
             return Response::successful('删除成功')->toJson();
+        } catch (ValidationException $exce) {
+            return Response::failed(10009, $exce->getMessage())->toJson();
         } catch (\Exception $exce) {
-            Log::error($exce->getMessage().':'.$exce->getLine());
+            Log::error($exce);
 
-            return Response::failed(10003)->toJson();
+            return Response::failed(10003, '操作失败')->toJson();
         }
     }
 }

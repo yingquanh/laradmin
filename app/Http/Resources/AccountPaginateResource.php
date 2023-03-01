@@ -16,9 +16,10 @@ class AccountPaginateResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'account_name' => $this->account_name,
+            'account' => $this->account,
             'email' => $this->email,
             'mobile' => $this->mobile,
+            'name' => $this->name,
             'status' => $this->status,
         ];
     }

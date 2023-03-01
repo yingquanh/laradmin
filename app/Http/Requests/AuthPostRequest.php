@@ -42,7 +42,7 @@ class AuthPostRequest extends FormRequest
                 'required',
                 'size:4',
                 function ($attribute, $value, $fail) {
-                    info($attribute);
+                    // 验证图像校验码
                     if (!Cache::has($this->header('captcha_key'))) {
                         $fail('校验码已过期');
                     } elseif (strtolower($value) !== Cache::pull($this->header('captcha_key'))) {

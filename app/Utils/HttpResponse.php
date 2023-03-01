@@ -10,6 +10,7 @@ class HttpResponse
     protected $message;
     protected $data = [];
     protected $statusCode = 200;
+    protected $headers = [];
 
     /**
      * 公共错误消息
@@ -76,6 +77,18 @@ class HttpResponse
         return $this;
     }
 
+    public function getHeaders()
+    {
+        return $this->headers;
+    }
+
+    public function setHeaders(array $headers)
+    {
+        $this->headers = array_merge($this->headers, $headers);
+
+        return $this;
+    }
+
     protected function toArray()
     {
         if (array_key_exists($this->code, self::COMMON_ERROR_MESSAGE)) {
@@ -93,7 +106,7 @@ class HttpResponse
 
     public function toJson()
     {
-        return Response::json($this->toArray(), $this->getStatusCode());
+        return Response::json($this->toArray(), $this->getStatusCode(), $this->getHeaders());
     }
 
     public static function successful(string $message = 'success')

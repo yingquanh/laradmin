@@ -15,8 +15,9 @@ class RoleSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('t_role')->insert([
-            'role_name' => '系统管理员',
+        DB::table('tb_role')->insert([
+            'title' => '超级管理员',
+            'description' => '拥有系统最高权限',
         ]);
     }
 }

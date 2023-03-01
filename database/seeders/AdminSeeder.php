@@ -16,9 +16,10 @@ class AdminSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('t_account')->insert([
-            'account_name' => 'administrator',
-            'account_password' => Hash::make('admin@123'),
+        DB::table('tb_admin')->insert([
+            'account' => 'administrator',
+            'name' => '系统管理员',
+            'password' => Hash::make('admin@123'),
         ]);
     }
 }

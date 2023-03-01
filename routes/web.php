@@ -13,6 +13,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/{query}', function () {
+/* Route::get('/{query}', function () {
     return view('admin');
-})->where('query', '(?!api).*');
+})->where('query', '(?!api).*'); */

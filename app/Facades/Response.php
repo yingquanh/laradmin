@@ -14,7 +14,8 @@ use Illuminate\Support\Facades\Facade;
  * @method \App\Utils\HttpResponse setMessage(string $message)
  * @method array|object getData();
  * @method \App\Utils\HttpResponse setData(array|object $data)
- * @method \App\Utils\ApiResponse setStatusCode(int $statusCode)
+ * @method \App\Utils\HttpResponse setStatusCode(int $statusCode)
+ * @method \App\Utils\HttpResponse setHeaders(array $headers)
  * @method \Illuminate\Http\JsonResponse toJson()
  * @method static \App\Utils\HttpResponse successful(string $message = 'success')
  * @method static \App\Utils\HttpResponse failed(int $code = 10000, string $message = 'fail')

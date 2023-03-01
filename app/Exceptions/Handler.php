@@ -2,6 +2,8 @@
 
 namespace App\Exceptions;
 
+use App\Facades\Response;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Validation\ValidationException;
 use Throwable;
@@ -49,23 +51,23 @@ class Handler extends ExceptionHandler
         });
 
         /**
-         * 自定义表单验证错误消息格式
+         * 自定义 Guard 身份认证失败异常消息
          */
-        $this->renderable(function (ValidationException $exception) {
-            $message = $exception->validator->getMessageBag()->first();
+        $this->renderable(function (AuthenticationException $e) {
+            return Response::failed(
+                40109, 
+                $e->getMessage()
+            )->setStatusCode(401)->toJson();
+        });
 
-            // 方式二
-            // 只读取错误中的第一个错误信息
-            /* $errors = $exception->errors();
-            $message = '';
-            // 框架返回的是二维数组，因此需要去循环读取第一个数据
-            foreach ($errors as $key => $val) {
-                $keys = array_key_first($val);
-                $message = $val[$keys];
-                break;
-            } */
-
-            return response()->json(['errcode' => 1001, 'errmsg' => $message, 'data' => []]);
+        /**
+         * 自定义表单验证器异常消息
+         */
+        $this->renderable(function (ValidationException $e) {
+            return Response::failed(
+                10009, 
+                $e->validator->getMessageBag()->first(),
+            )->toJson();
         });
     }
 }

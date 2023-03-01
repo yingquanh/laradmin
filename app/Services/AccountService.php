@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Account;
+use App\Models\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -10,7 +10,7 @@ class AccountService
 {
     protected $account;
 
-    public function __construct(Account $account)
+    public function __construct(Admin $account)
     {
         $this->account = $account;
     }
@@ -23,19 +23,19 @@ class AccountService
     /**
      * 根据账号名称查询
      *
-     * @param string $name
-     * @return \Illuminate\Contracts\Auth\Authenticatable
+     * @param string $account
+     * @return \App\Models\Admin
      */
-    public function findByAccountName(string $name)
+    public function findByAccountName(string $account)
     {
-        return $this->account->where('account_name', $name)->first();
+        return $this->account->where('account', $account)->first();
     }
 
     /**
      * 根据账号邮箱查询
      *
      * @param string $email
-     * @return \Illuminate\Contracts\Auth\Authenticatable
+     * @return \App\Models\Admin
      */
     public function findByAccountEmail(string $email)
     {
@@ -46,7 +46,7 @@ class AccountService
      *根据手机号码查询
      *
      * @param string $mobile
-     * @return \Illuminate\Contracts\Auth\Authenticatable
+     * @return \App\Models\Admin
      */
     public function findByMobileNumber(string $mobile)
     {
@@ -56,14 +56,14 @@ class AccountService
     /**
      * 根据名称检查账号是否存在
      *
-     * @param string $name
+     * @param string $account
      * @param integer|null $id
      * @return bool
      */
-    public function checkAccountName(string $name, int $id = null)
+    public function checkAccountName(string $account, int $id = null)
     {
         $rows = $this->account
-            ->where('account_name', $name)
+            ->where('account', $account)
             ->when($id, function ($query) use ($id) {
                 $query->where('id', '<>', $id);
             })
@@ -140,7 +140,7 @@ class AccountService
      * 存储数据
      *
      * @param Request $reqeust
-     * @return \App\Models\Account|\Throwable
+     * @return \App\Models\Admin|\Throwable
      */
     public function save(Request $reqeust)
     {
@@ -149,13 +149,14 @@ class AccountService
         }
 
         // 输入密码则更新密码
-        if ($reqeust->input('account_password')) {
-            $this->account->account_password = Hash::make($reqeust->input('account_password'));
+        if ($reqeust->input('password')) {
+            $this->account->password = Hash::make($reqeust->input('password'));
         }
 
-        $this->account->account_name = $reqeust->input('account_name');
+        $this->account->account = $reqeust->input('account');
         $this->account->email = $reqeust->input('email') ?? '';
         $this->account->mobile = $reqeust->input('mobile') ?? '';
+        $this->account->name = $reqeust->input('name') ?? $reqeust->input('account');
         $this->account->saveOrFail();
 
         return $this->account;
@@ -165,7 +166,7 @@ class AccountService
      * 删除数据
      *
      * @param integer $id
-     * @return \App\Models\Account|\Throwable
+     * @return \App\Models\Admin|\Throwable
      */
     public function delete(int $id)
     {

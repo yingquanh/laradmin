@@ -13,6 +13,20 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
 
     /**
+     * 与模型关联的数据表
+     *
+     * @var string
+     */
+    protected $table = 'tb_users';
+
+    /**
+     * 与数据表关联的主键
+     *
+     * @var string
+     */
+    protected $primaryKey = 'id';
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
