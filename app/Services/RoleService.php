@@ -28,8 +28,8 @@ class RoleService
      */
     public function checkRoleName(string $name, int $id = null)
     {
-        return !$this->role
-            ->where('role_name', $name)
+        return $this->role
+            ->where('title', $name)
             ->when(
                 $id, 
                 fn ($query) => $query->where('id', '<>', $id)
@@ -80,7 +80,7 @@ class RoleService
         return $this->role
             ->when(
                 $request->input('keyword'), 
-                fn ($query) => $query->where('role_name', 'like', '%'.trim($request->input('keyword')).'%')
+                fn ($query) => $query->where('title', 'like', '%'.trim($request->input('keyword')).'%')
             )
             ->paginate($request->input('pageSize') ?? 20);
     }
@@ -97,7 +97,8 @@ class RoleService
             $this->role = $this->findBy($request->input('id'));
         }
 
-        $this->role->role_name = $request->input('role_name');
+        $this->role->title = $request->input('title');
+        $this->role->description = $request->input('description') ?? '';
         $this->role->saveOrFail();
 
         return $this->role;

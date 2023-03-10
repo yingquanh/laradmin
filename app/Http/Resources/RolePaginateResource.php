@@ -16,7 +16,9 @@ class RolePaginateResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'role_name' => $this->role_name,
+            'title' => $this->title,
+            'description' => $this->description,
+            'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
         ];
     }
 }

@@ -133,6 +133,20 @@ class AccountService
             ->with([
                 'roles',
             ])
+            ->when($reqeust->input('keyword'), function ($query) use ($reqeust) {
+                $keyword = trim($reqeust->input('keyword'));info($keyword);
+                $query->where(function ($query) use ($keyword) {
+                    $query->where('account', 'like', '%'.$keyword.'%')
+                        ->orWhere('name', 'like', '%'.$keyword.'%')
+                        ->orWhere('email', $keyword)
+                        ->orWhere('mobile', $keyword);
+                });
+            })
+            ->when($reqeust->input('roleid'), function ($query) use ($reqeust) {
+                $query->whereHas('roles', function ($query) use ($reqeust) {
+                    $query->where('id', $reqeust->input('roleid'));
+                });
+            })
             ->paginate($reqeust->input('pageSize') ?? 20);
     }
 
@@ -171,5 +185,17 @@ class AccountService
     public function delete(int $id)
     {
         return $this->account->findOrFail($id)->delete();
+    }
+
+    /**
+     * 更新数据
+     *
+     * @param integer $id
+     * @param array $params
+     * @return \App\Models\Admin|\Throwable
+     */
+    public function update(int $id, array $params)
+    {
+        return $this->account->findOrFail($id)->update($params);
     }
 }

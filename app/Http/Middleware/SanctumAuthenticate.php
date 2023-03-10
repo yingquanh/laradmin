@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SanctumAuthenticate
 {
@@ -25,7 +26,7 @@ class SanctumAuthenticate
             $abilities = 'UserLogged';
         }
 
-        if (!empty($abilities) && !$request->user()->tokenCan($abilities)) {
+        if (!empty($abilities) && !Auth::user()->tokenCan($abilities)) {
             throw new AuthenticationException();
         }
 

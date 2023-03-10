@@ -65,6 +65,8 @@ Route::group(['middleware' => ['auth:sanctum', 'sanctum:admin'], 'namespace' => 
         $router->get('info', [AccountController::class, 'show']);
         $router->post('create', [AccountController::class, 'store']);
         $router->put('update', [AccountController::class, 'update']);
+        $router->put('recover', [AccountController::class, 'recover']);
+        $router->put('forbidden', [AccountController::class, 'forbidden']);
         $router->delete('delete', [AccountController::class, 'destroy']);
     });
 

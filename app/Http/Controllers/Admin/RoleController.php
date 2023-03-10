@@ -114,7 +114,7 @@ class RoleController extends Controller
         DB::beginTransaction();
         try {
             // 验证角色名称
-            if ($this->roleService->checkRoleName($request->input('role_name'))) {
+            if ($this->roleService->checkRoleName($request->input('title'))) {
                 throw ValidationException::withMessages(['message' => '角色名称已存在']);
             }
 
@@ -122,7 +122,7 @@ class RoleController extends Controller
             $role = $this->roleService->save($request);
 
             // 绑定权限
-            $role->permissions()->attach($request->input('permissions'));
+            // $role->permissions()->attach($request->input('permissions'));
 
             DB::commit();
 
@@ -153,7 +153,7 @@ class RoleController extends Controller
                 throw ValidationException::withMessages(['message' => '未知错误, 系统参数[id]缺失']);
             }
     
-            if ($this->roleService->checkRoleName($request->input('role_name'), $request->input('id'))) {
+            if ($this->roleService->checkRoleName($request->input('title'), $request->input('id'))) {
                 throw ValidationException::withMessages(['message' => '角色名称已存在']);
             }
 
@@ -161,7 +161,7 @@ class RoleController extends Controller
             $role = $this->roleService->save($request);
 
             // 绑定权限
-            $role->permissions()->sync($request->input('permissions'));
+            // $role->permissions()->sync($request->input('permissions'));
 
             DB::commit();
 

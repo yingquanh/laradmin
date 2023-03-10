@@ -24,15 +24,16 @@ class AccountPostRequest extends FormRequest
     public function rules()
     {
         return [
-            'account_name' => 'bail|required',
-            'account_password' => [
+            'account' => 'bail|required',
+            'password' => [
                 'bail',
                 'required',
                 function ($attribute, $value, $fail) {
                     // 解密登录密码密文
-                    $passwd = openssl_decrypt(hex2bin($value), 'AES-128-CBC', '3D57269CC8919245', OPENSSL_RAW_DATA, '349F65A7F1B85BDF');
-                    if (strlen($passwd) < 6 || strlen($passwd) > 24) {
-                        $fail('登录密码长度为6~24个字符');
+                    // $passwd = openssl_decrypt(hex2bin($value), 'AES-128-CBC', '3D57269CC8919245', OPENSSL_RAW_DATA, '349F65A7F1B85BDF');
+                    $passwd = $value;
+                    if (strlen($passwd) < 8 || strlen($passwd) > 26) {
+                        $fail('登录密码长度为8~26个字符');
                     }
                 },
             ],
@@ -47,8 +48,8 @@ class AccountPostRequest extends FormRequest
     public function messages()
     {
         return [
-            'account_name.required' => '登录账号为必填项',
-            'account_password.required' => '登录密码为必填项',
+            'account.required' => '登录账号为必填项',
+            'password.required' => '登录密码为必填项',
         ];
     }
 }

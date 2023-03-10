@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\AdminState;
 use App\Facades\Response;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AccountPostRequest;
@@ -76,12 +77,12 @@ class AccountController extends Controller
             }
 
             // 验证管理员邮箱
-            if ($this->accountService->checkAccountEmail($request->input('email'))) {
+            if ($request->input('email') && $this->accountService->checkAccountEmail($request->input('email'))) {
                 throw ValidationException::withMessages(['message' => '邮箱已存在!']);
             }
 
             // 验证管理员手机号
-            if ($this->accountService->checkMobileNumber($request->input('mobile'))) {
+            if ($request->input('mobile') && $this->accountService->checkMobileNumber($request->input('mobile'))) {
                 throw ValidationException::withMessages(['message' => '手机号码已存在!']);
             }
 
@@ -90,7 +91,7 @@ class AccountController extends Controller
             $account = $this->accountService->save($request);
 
             // 附加用户组
-            $account->roles()->attach($request->input('role_id'));
+            $account->roles()->attach($request->input('roleid'));
 
             DB::commit();
 
@@ -128,12 +129,12 @@ class AccountController extends Controller
             }
 
             // 验证管理员邮箱
-            if ($this->accountService->checkAccountEmail($request->input('email'), $request->input('id'))) {
+            if ($request->input('email') && $this->accountService->checkAccountEmail($request->input('email'), $request->input('id'))) {
                 throw ValidationException::withMessages(['message' => '邮箱已存在!']);
             }
     
             // 验证管理员手机号
-            if ($this->accountService->checkMobileNumber($request->input('mobile'), $request->input('id'))) {
+            if ($request->input('mobile') && $this->accountService->checkMobileNumber($request->input('mobile'), $request->input('id'))) {
                 throw ValidationException::withMessages(['message' => '手机号码已存在!']);
             }
 
@@ -142,7 +143,7 @@ class AccountController extends Controller
             $account = $this->accountService->save($request);
 
             // 同步用户组
-            $account->roles()->sync($request->input('role_id'));
+            $account->roles()->sync($request->input('roleid'));
 
             DB::commit();
 
@@ -174,17 +175,73 @@ class AccountController extends Controller
 
             $this->accountService->delete($request->input('id'));
 
-            return response()->json([
-                'errcode' => 0,
-                'errmsg' => '删除成功',
-                'data' => []
-            ]);
+            return Response::successful('删除成功')->toJson();
         } catch (ValidationException $exce) {
             return Response::failed(10009, $exce->getMessage())->toJson();
         } catch (\Exception $exce) {
             Log::error($exce);
 
             return Response::failed(10003, '操作失败')->toJson();
+        }
+    }
+
+    /**
+     * 恢复账号
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function recover(Request $request)
+    {
+        try {
+            if (!$request->filled('id')) {
+                throw ValidationException::withMessages(['message' => '未知错误, 系统参数[id]缺失']);
+            }
+
+            $this->accountService->update(
+                $request->input('id'),
+                [
+                    'status' => AdminState::Normal,
+                ]
+            );
+
+            return Response::successful('操作成功')->toJson();
+        } catch (ValidationException $exce) {
+            return Response::failed(10009, $exce->getMessage())->toJson();
+        } catch (\Exception $exce) {
+            Log::error($exce);
+
+            return Response::failed(10004, '操作失败')->toJson();
+        }
+    }
+
+    /**
+     * 禁用账号
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function forbidden(Request $request)
+    {
+        try {
+            if (!$request->filled('id')) {
+                throw ValidationException::withMessages(['message' => '未知错误, 系统参数[id]缺失']);
+            }
+
+            $this->accountService->update(
+                $request->input('id'),
+                [
+                    'status' => AdminState::Disabled,
+                ]
+            );
+
+            return Response::successful('操作成功')->toJson();
+        } catch (ValidationException $exce) {
+            return Response::failed(10009, $exce->getMessage())->toJson();
+        } catch (\Exception $exce) {
+            Log::error($exce);
+
+            return Response::failed(10004, '操作失败')->toJson();
         }
     }
 }
